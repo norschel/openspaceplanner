@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { FeatureFlag } from "../models/featureflag";
+import { FeatureFlag } from "../../models/featureflag";
 import { Observable } from "rxjs";
 import { filter, flatMap, map, share, shareReplay, distinctUntilChanged } from "rxjs/operators";
 

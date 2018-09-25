@@ -3,7 +3,6 @@ import { Router } from "@angular/router";
 import { SessionService } from "../session/session.service";
 import { Observable } from "rxjs";
 import { Session } from "../models/session";
-import { FeatureFlagService } from "../shared/featureflags.service";
 
 @Component({
   selector: "app-create-session",
@@ -17,7 +16,7 @@ export class CreateSessionComponent {
 
   public lastSessions$: Observable<Session[]>;
 
-  constructor(private sessionService: SessionService, private router: Router, public featureFlagService: FeatureFlagService) {
+  constructor(private sessionService: SessionService, private router: Router) {
     this.lastSessions$ = this.sessionService.getLastSessions();
   }
 

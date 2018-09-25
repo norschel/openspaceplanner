@@ -19,7 +19,8 @@ import { SessionModalComponent } from './session-modal/session-modal.component';
 import { ApplicationInsightsModule } from '@markpieszak/ng-application-insights';
 import { EditButtonDirective } from './shared/edit-button/edit-button.directive';
 import { FeatureFlag } from './models/featureflag';
-import { FeatureFlagService } from './shared/featureflags.service';
+import { FeatureFlagService } from './shared/feature-flags/feature-flags.service';
+import { FeatureFlagEnabledPipe } from './shared/feature-flags/feature-flag-enabled.pipe';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { FeatureFlagService } from './shared/featureflags.service';
     SessionModalComponent,
     ModalDialogComponent,
     SessionOverviewComponent,
-    EditButtonDirective
+    EditButtonDirective,
+    FeatureFlagEnabledPipe
   ],
   imports: [
     BrowserModule,
