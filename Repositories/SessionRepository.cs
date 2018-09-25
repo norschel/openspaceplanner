@@ -8,6 +8,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using System;
 using Newtonsoft.Json;
+using JsonDotNet.CustomContractResolvers;
 
 namespace openspace.Repositories
 {
@@ -42,14 +43,50 @@ namespace openspace.Repositories
                 if (await blockBlob.ExistsAsync())
                 {
                     _sessions = new List<Session>(JsonConvert.DeserializeObject<Session[]>(blockBlob.DownloadTextAsync().Result));
+
+                    string schemaVersion = "1.0";
+                    if (blockBlob.Metadata.ContainsKey("SchemaVersion"))
+                    {
+                        schemaVersion = blockBlob.Metadata["SchemaVersion"];
+                    }
+
+                    if (schemaVersion.Equals("1.0"))
+                    {
+                        InMemoryMigrateToV2(_sessions);
+                    }
                 }
             }
         }
 
         protected override void Save()
         {
+            var propertiesContractResolver = new PropertiesContractResolver();
+            propertiesContractResolver.ExcludeProperties.Add("Session.Name");
+            var serializerSettings = new JsonSerializerSettings();
+            serializerSettings.ContractResolver = propertiesContractResolver;
+            JsonConvert.SerializeObject(a, serializerSettings);
+
             var blockBlob = _container.GetBlockBlobReference("sessions");
-            blockBlob.UploadTextAsync(JsonConvert.SerializeObject(_sessions.ToArray()));
+            if (_configuration["SchemaVersion"].Equals("2.0"))
+            {
+                blockBlob.Metadata["SchemaVersion"] = "2.0";
+                InMemoryMigrateToV2(_sessions);
+                JsonConvert.SerializeObject(_sessions.ToArray(), settings);
+            }
+
+
+            JsonConvert.SerializeObject(_sessions.ToArray())
+
+
+            blockBlob.UploadTextAsync();
+        }
+
+        protected void InMemoryMigrateToV2(ICollection<Session> sessions)
+        {
+            foreach (var session in sessions)
+            {
+                session.DisplayName = session.Name;
+            }
         }
     }
 }

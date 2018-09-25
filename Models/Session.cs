@@ -9,6 +9,8 @@ namespace openspace.Models
 
         public string Name { get; set; }
 
+        public string DisplayName { get; set; }
+
         public ICollection<Topic> Topics { get; set; } = new List<Topic>();
 
         public ICollection<Room> Rooms { get; set; } = new List<Room>();
