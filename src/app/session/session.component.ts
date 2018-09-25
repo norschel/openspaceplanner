@@ -11,6 +11,7 @@ import { Topic } from "../models/topic";
 import { OnDestroy } from "@angular/core/src/metadata/lifecycle_hooks";
 import * as _ from "lodash";
 import * as interact from "interactjs";
+import { FeatureFlagService } from "../shared/featureflags.service";
 
 @Component({
     selector: "app-session",
@@ -50,7 +51,8 @@ export class SessionComponent implements OnInit, OnDestroy {
     constructor(
         private sessionService: SessionService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        public featureFlagService: FeatureFlagService
     ) {}
 
     public async ngOnInit() {
