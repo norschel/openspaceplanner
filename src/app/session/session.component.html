@@ -3,7 +3,7 @@
 
 <div class="container" *ngIf="session != null && !isLoading">
     <h1 class="title" (dblclick)="showModal($event, 'session', session)" appEditButton>
-        {{ session.name }}
+        {{ session.displayName }}
         <a (click)="showModal($event, 'session', session)">
             <span class="fa fa-edit edit-button"></span>
         </a>
