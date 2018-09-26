@@ -47,22 +47,22 @@ export class SessionService {
 
   public update(session: Session = <Session>{}): Promise<Session> {
     const request = session.id != null
-      ? this.http.put<Session>(`/api/sessions/${session.id}`, session)
-      : this.http.post<Session>(`/api/sessions`, session);
+      ? this.http.put<Session>(`/api/v2/sessions/${session.id}`, session)
+      : this.http.post<Session>(`/api/v2/sessions`, session);
 
     return request.toPromise();
   }
 
   public delete(id: number): Promise<void> {
-    return this.http.delete<void>(`/api/sessions/${id}`).toPromise();
+    return this.http.delete<void>(`/api/v2/sessions/${id}`).toPromise();
   }
 
   public getLastSessions(): Observable<Session[]> {
-    return this.http.get<Session[]>(`/api/sessions/last`);
+    return this.http.get<Session[]>(`/api/v2/sessions/last`);
   }
 
   public get(sessionId: number): Promise<Session> {
-    return this.http.get(`/api/sessions/${sessionId}`)
+    return this.http.get(`/api/v2/sessions/${sessionId}`)
       .toPromise()
       .then(obj => {
         this.currentSession = obj as Session;
@@ -77,24 +77,24 @@ export class SessionService {
 
   public updateTopic(topic: Topic): Promise<Topic> {
     const request = topic.id != null
-      ? this.http.put(`/api/sessions/${this.currentSession.id}/topics/${topic.id}`, topic)
-      : this.http.post(`/api/sessions/${this.currentSession.id}/topics/`, topic);
+      ? this.http.put(`/api/v2/sessions/${this.currentSession.id}/topics/${topic.id}`, topic)
+      : this.http.post(`/api/v2/sessions/${this.currentSession.id}/topics/`, topic);
 
     return request.toPromise().then(obj => this.updateInternal(this.currentSession.topics, obj as Topic));
   }
 
   public updateSlot(slot: Slot): Promise<Slot> {
     const request = slot.id != null
-      ? this.http.put(`/api/sessions/${this.currentSession.id}/slots/${slot.id}`, slot)
-      : this.http.post(`/api/sessions/${this.currentSession.id}/slots/`, slot);
+      ? this.http.put(`/api/v2/sessions/${this.currentSession.id}/slots/${slot.id}`, slot)
+      : this.http.post(`/api/v2/sessions/${this.currentSession.id}/slots/`, slot);
 
     return request.toPromise().then(obj => this.updateInternal(this.currentSession.slots, obj as Slot));
   }
 
   public updateRoom(room: Room): Promise<Room> {
     const request = room.id != null
-      ? this.http.put(`/api/sessions/${this.currentSession.id}/rooms/${room.id}`, room)
-      : this.http.post(`/api/sessions/${this.currentSession.id}/rooms/`, room);
+      ? this.http.put(`/api/v2/sessions/${this.currentSession.id}/rooms/${room.id}`, room)
+      : this.http.post(`/api/v2/sessions/${this.currentSession.id}/rooms/`, room);
 
     return request.toPromise().then(obj => this.updateInternal(this.currentSession.rooms, obj as Room));
   }
@@ -108,8 +108,8 @@ export class SessionService {
     this.saveSessionOptions();
 
     const request = attendance.id != null
-      ? this.http.put(`/api/sessions/${this.currentSession.id}/topics/${topicId}/attendances/${attendance.id}`, attendance)
-      : this.http.post(`/api/sessions/${this.currentSession.id}/topics/${topicId}/attendances/`, [attendance]);
+      ? this.http.put(`/api/v2/sessions/${this.currentSession.id}/topics/${topicId}/attendances/${attendance.id}`, attendance)
+      : this.http.post(`/api/v2/sessions/${this.currentSession.id}/topics/${topicId}/attendances/`, [attendance]);
 
     return request.toPromise().then(obj => this.updateInternal(this.getTopic(topicId).attendees, attendance));
   }
@@ -124,7 +124,7 @@ export class SessionService {
       attendances.push(<Attendance>{ id: getRandomId(), value: true });
     }
 
-    const request = this.http.post(`/api/sessions/${this.currentSession.id}/topics/${topicId}/attendances/`, attendances);
+    const request = this.http.post(`/api/v2/sessions/${this.currentSession.id}/topics/${topicId}/attendances/`, attendances);
     return request.toPromise().then(obj => this.getTopic(topicId).attendees = attendances);
   }
 
@@ -137,8 +137,8 @@ export class SessionService {
     this.saveSessionOptions();
 
     const request = rating.id != null
-      ? this.http.put(`/api/sessions/${this.currentSession.id}/topics/${topicId}/ratings/${rating.id}`, rating)
-      : this.http.post(`/api/sessions/${this.currentSession.id}/topics/${topicId}/ratings/`, rating);
+      ? this.http.put(`/api/v2/sessions/${this.currentSession.id}/topics/${topicId}/ratings/${rating.id}`, rating)
+      : this.http.post(`/api/v2/sessions/${this.currentSession.id}/topics/${topicId}/ratings/`, rating);
 
     return request.toPromise().then(obj => this.updateInternal(this.getTopic(topicId).ratings, rating));
   }
@@ -147,27 +147,27 @@ export class SessionService {
     const id = getRandomId();
     const feedback = <Feedback>{ id, value };
 
-    const request = this.http.post(`/api/sessions/${this.currentSession.id}/topics/${topicId}/feedback/`, feedback);
+    const request = this.http.post(`/api/v2/sessions/${this.currentSession.id}/topics/${topicId}/feedback/`, feedback);
 
     return request.toPromise().then(obj => this.updateInternal(this.getTopic(topicId).feedback, feedback));
   }
 
   public deleteTopic(id: string): Promise<void> {
-    return this.http.delete(`/api/sessions/${this.currentSession.id}/topics/${id}`)
+    return this.http.delete(`/api/v2/sessions/${this.currentSession.id}/topics/${id}`)
       .toPromise()
       .then(() => this.deleteInternal(this.currentSession.topics, id))
       .then(() => null);
   }
 
   public deleteSlot(id: string): Promise<void> {
-    return this.http.delete(`/api/sessions/${this.currentSession.id}/slots/${id}`)
+    return this.http.delete(`/api/v2/sessions/${this.currentSession.id}/slots/${id}`)
       .toPromise()
       .then(() => this.deleteInternal(this.currentSession.slots, id))
       .then(() => null);
   }
 
   public deleteRoom(id: string): Promise<void> {
-    return this.http.delete(`/api/sessions/${this.currentSession.id}/rooms/${id}`)
+    return this.http.delete(`/api/v2/sessions/${this.currentSession.id}/rooms/${id}`)
       .toPromise()
       .then(() => this.deleteInternal(this.currentSession.rooms, id))
       .then(() => null);
@@ -190,27 +190,27 @@ export class SessionService {
 
     delete this.sessionOptions.topicsRating[topicId];
 
-    return this.http.delete(`/api/sessions/${this.currentSession.id}/topics/${topicId}/attendances/${attendanceId}`)
+    return this.http.delete(`/api/v2/sessions/${this.currentSession.id}/topics/${topicId}/attendances/${attendanceId}`)
       .toPromise()
       .then(() => this.deleteInternal(this.getTopic(topicId).attendees, attendanceId))
       .then(() => null);
   }
 
   public deleteTopicFeedback(topicId: string, feedbackId: string): Promise<void> {
-    return this.http.delete(`/api/sessions/${this.currentSession.id}/topics/${topicId}/feedback/${feedbackId}`)
+    return this.http.delete(`/api/v2/sessions/${this.currentSession.id}/topics/${topicId}/feedback/${feedbackId}`)
       .toPromise()
       .then(() => this.deleteInternal(this.getTopic(topicId).feedback, feedbackId))
       .then(() => null);
   }
 
   public resetRatings() {
-    return this.http.delete(`/api/sessions/${this.currentSession.id}/ratings`)
+    return this.http.delete(`/api/v2/sessions/${this.currentSession.id}/ratings`)
       .toPromise()
       .then(() => null);
   }
 
   public resetAttendance() {
-    return this.http.delete(`/api/sessions/${this.currentSession.id}/attendances`)
+    return this.http.delete(`/api/v2/sessions/${this.currentSession.id}/attendances`)
       .toPromise()
       .then(() => null);
   }
@@ -232,7 +232,7 @@ export class SessionService {
 
     delete this.sessionOptions.topicsRating[topicId];
 
-    return this.http.delete(`/api/sessions/${this.currentSession.id}/topics/${topicId}/ratings/${ratingId}`)
+    return this.http.delete(`/api/v2/sessions/${this.currentSession.id}/topics/${topicId}/ratings/${ratingId}`)
       .toPromise()
       .then(() => this.deleteInternal(this.getTopic(topicId).ratings, ratingId))
       .then(() => null);

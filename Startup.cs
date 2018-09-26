@@ -73,15 +73,17 @@ namespace openspace
 
             if (Configuration["TableStorageAccount"] != null)
             {
-                services.AddSingleton<ISessionRepository>(_ => {
-                    var repository = new SessionRepository(Configuration);
+                services.AddSingleton<ISessionRepositoryV1>(_ => {
+                    var repository = new SessionRepositoryV1(Configuration);
                     repository.InitializeAsync().GetAwaiter().GetResult();
                     return repository;
                 });
-            }
-            else
-            {
-                services.AddSingleton<ISessionRepository, LocalSessionRepository>();
+
+                services.AddSingleton<ISessionRepositoryV2>(_ => {
+                    var repository = new SessionRepositoryV2(Configuration);
+                    repository.InitializeAsync().GetAwaiter().GetResult();
+                    return repository;
+                });
             }
 
             var hostName = Environment.GetEnvironmentVariable("WEBSITE_HOSTNAME") ?? "localhost:5001";
@@ -90,8 +92,11 @@ namespace openspace
             services.AddSingleton<ITeamsService>(provider =>
                 new TeamsService(provider.GetService<IHttpClientFactory>(), Configuration["TeamsWebhookUrl"], sessionUrlFormat));
 
-            services.AddSingleton<ICalendarService>(provider
-                => new CalendarService(provider.GetService<ISessionRepository>(), Configuration["Timezone"] ?? "Europe/Berlin"));
+            services.AddSingleton<ICalendarServiceV1>(provider
+                => new CalendarServiceV1(provider.GetService<ISessionRepositoryV1>(), Configuration["Timezone"] ?? "Europe/Berlin"));
+
+            services.AddSingleton<ICalendarServiceV2>(provider
+                => new CalendarServiceV2(provider.GetService<ISessionRepositoryV2>(), Configuration["Timezone"] ?? "Europe/Berlin"));
         }
     }
 }

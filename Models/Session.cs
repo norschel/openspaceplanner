@@ -7,6 +7,7 @@ namespace openspace.Models
     {
         public int Id { get; set; }
 
+        [Obsolete("Will be removed in v3, use DisplayName instead")]
         public string Name { get; set; }
 
         public string DisplayName { get; set; }
