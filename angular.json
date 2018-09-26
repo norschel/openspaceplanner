@@ -79,8 +79,7 @@
               "node_modules/tippy.js/dist/tippy.css"
             ],
             "assets": [
-              "src/assets",
-              "src/favicon.ico"
+              "src/assets"
             ]
           }
         },
