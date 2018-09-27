@@ -36,6 +36,6 @@
 </div>
 
 
-<a class="calendar-button" href="/api/sessions/calendar" *ngIf="'ICalExport' | featureFlagEnabled">
+<a class="calendar-button" href="/api/sessions/calendar" *ngIf="'ICalExport' | featureFlagEnabled | async">
   <span class="fa fa-calendar fa-2x"></span>
 </a>

@@ -1,5 +1,5 @@
 <header>
-    <nav class="navbar" [class.header-vnext]="'ThemeVNext' | featureFlagEnabled">
+    <nav class="navbar" [class.header-vnext]="'ThemeVNext' | featureFlagEnabled | async">
         <div class="container">
             <div class="columns is-vcentered">
                 <h2 class="subtitle is-marginless">
